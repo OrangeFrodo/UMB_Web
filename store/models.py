@@ -1,12 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 # Create your models here.
 
 class Customer(models.Model):
-	user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=200, null=True)
 	email = models.CharField(max_length=200)
+
+	def create_customer_profile(sender, instance, created, **kwargs):
+		if created:
+			Customer.objects.create(user=instance, name=instance.username)
+
+
+	post_save.connect(create_customer_profile, sender=User)
 
 	def __str__(self):
 		return self.name

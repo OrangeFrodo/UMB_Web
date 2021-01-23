@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'store.apps.StoreConfig',
+    'crispy_forms',
 
     'django.contrib.sites',
     'allauth',
@@ -73,6 +74,15 @@ TEMPLATES = [
         },
     },
 ]
+
+
+ACCOUNT_FORMS = {
+'signup': 'store.forms.SignUpForm',
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -140,3 +150,8 @@ MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+
+# CRISPY FORMS
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
