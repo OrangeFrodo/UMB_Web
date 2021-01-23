@@ -5,13 +5,19 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 class Customer(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+	first_name = models.CharField(max_length=50, null=True, blank=True)
+	last_name = models.CharField(max_length=50, null=True, blank=True)
 	name = models.CharField(max_length=200, null=True)
 	email = models.CharField(max_length=200)
 
 	def create_customer_profile(sender, instance, created, **kwargs):
 		if created:
-			Customer.objects.create(user=instance, name=instance.username)
+			Customer.objects.create(user=instance, 
+									name=instance.username, 
+									email=instance.email, 
+									first_name= instance.first_name, 
+									last_name=instance.last_name)
 
 
 	post_save.connect(create_customer_profile, sender=User)
@@ -22,7 +28,7 @@ class Customer(models.Model):
 
 class Product(models.Model):
 	name = models.CharField(max_length=200)
-	price = models.FloatField()
+	price = models.DecimalField(max_digits=7, decimal_places=2)
 	digital = models.BooleanField(default=False,null=True, blank=True)
 	image = models.ImageField(null=True, blank=True)
 
@@ -89,3 +95,10 @@ class ShippingAddress(models.Model):
 
 	def __str__(self):
 		return self.address
+
+
+class Coupon(models.Model):
+	code = models.CharField(max_length=15)
+
+	def __str__(self):
+		return self.code
