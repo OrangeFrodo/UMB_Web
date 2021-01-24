@@ -32,7 +32,7 @@ class Customer(models.Model):
 
 class Product(models.Model):
 	name = models.CharField(max_length=200)
-	price = models.DecimalField(max_digits=7, decimal_places=2)
+	price = models.FloatField()
 	digital = models.BooleanField(default=False,null=True, blank=True)
 	image = models.ImageField(null=True, blank=True)
 
@@ -107,7 +107,7 @@ class ShippingAddress(models.Model):
 
 class Coupon(models.Model):
 	code = models.CharField(max_length=15)
-	ammount = models.DecimalField(max_digits=7, decimal_places=2)
+	ammount = models.FloatField()
 
 	def __str__(self):
 		return self.code

@@ -133,14 +133,26 @@ def add_coupon(request):
 					'couponform':CouponForm()
 				}
 
-				order.coupon = get_coupon(request, code) 
+				order.coupon = Coupon.objects.get(code=code)
 				order.save()
 				messages.success(request, "Coupon activated")
 				return render(request, 'store/checkout.html', context)
 
 			except ObjectDoesNotExist:
 				messages.info(request, "You do not have an active order")
-				return render(request, 'store/checkout.html')
+				
+				cartItems = data['cartItems']
+				order = data['order']
+				items = data['items']
+
+				context = {
+					'items':items, 
+					'order':order, 
+					'cartItems':cartItems,
+					'couponform':CouponForm()
+				}
+
+				return render(request, 'store/checkout.html', context)
 	
 	return None
 
