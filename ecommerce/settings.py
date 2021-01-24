@@ -77,7 +77,8 @@ TEMPLATES = [
 
 
 ACCOUNT_FORMS = {
-'signup': 'store.forms.SignUpForm',
+    'signup': 'store.forms.SignUpForm',
+    'add:email': 'store.forms.MyAddEmailForm'
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

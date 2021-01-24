@@ -1,3 +1,4 @@
+from allauth.account.models import EmailAddress
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -19,6 +20,8 @@ class Customer(models.Model):
 									first_name= instance.first_name, 
 									last_name=instance.last_name)
 
+			EmailAddress.objects.create(user=instance,
+										email=instance.email)
 
 	post_save.connect(create_customer_profile, sender=User)
 

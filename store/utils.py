@@ -56,6 +56,7 @@ def cartData(request):
 
 	
 def guestOrder(request, data):
+	first_name = data['form']['first_name']
 	name = data['form']['name']
 	email = data['form']['email']
 
@@ -66,6 +67,7 @@ def guestOrder(request, data):
 			email=email,
 			)
 	customer.name = name
+	customer.first_name = first_name
 	customer.save()
 
 	order = Order.objects.create(

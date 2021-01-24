@@ -7,16 +7,19 @@
 				<form id="form">
 					<div id="user-info">
 						<div class="form-field">
-							<input required class="form-control" type="text" name="name" placeholder="Name..">
+							<input required class="form-control" type="text" name="first_name" placeholder="First Name..">
+						</div>
+						<div class="form-field">
+							<input required class="form-control" type="text" name="name" placeholder="Last Name..">
 						</div>
 						<div class="form-field">
 							<input required class="form-control" type="email" name="email" placeholder="Email..">
 						</div>
+						<hr>
 					</div>
 					
 					<div id="shipping-info">
-						<hr>
-						<p>Shipping Information:</p>
+						<h2 class="my-5 h2 text-center">Shipping Information:</h2>
 						<hr>
 						<div class="form-field">
 							<input class="form-control" type="text" name="address" placeholder="Address..">
@@ -30,12 +33,10 @@
 						<div class="form-field">
 							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
 						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="country" placeholder="Zip code..">
-						</div>
 					</div>
 
 					<hr>
+					<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
 					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
 				</form>
 			</div>
@@ -51,8 +52,6 @@
 
 		<div class="col-lg-6">
 			<div class="box-element">
-				<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
-				<hr>
 				<h3>Order Summary</h3>
 				<hr>
 				{% for item in items %}
@@ -65,6 +64,16 @@
 				{% endfor %}
 				<h5>Items:   {{order.get_cart_items}}</h5>
 				<h5>Total:   ${{order.get_cart_total|floatformat:2}}</h5>
+			</div>
+			<div>
+				<form class="card p-2">
+					<div class="input-group">
+					  <input type="text" class="form-control m-1" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+					  <div class="input-group-append">
+						<button class="btn btn-secondary btn-md waves-effect m-1" type="button">Redeem</button>
+					  </div>
+					</div>
+				  </form>
 			</div>
 		</div>
 	</div>
@@ -138,6 +147,7 @@
 
 	    	var userFormData = {
 				'name':null,
+				'first_name': null,
 				'email':null,
 				'total':total,
 			}
@@ -157,7 +167,7 @@
 	    	}
 
 	    	if (user == 'AnonymousUser'){
-	    		userFormData.name = form.name.value
+	    		userFormData.name = form.name.value +  " " +  form.first_name.value
 				userFormData.email = form.email.value
 	    	}
 
