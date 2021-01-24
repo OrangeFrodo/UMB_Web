@@ -4,35 +4,56 @@
      <div class="row" style="margin-top: 100px">
 		<div class="col-lg-6">
 			<div class="box-element" id="form-wrapper">
-				<form id="form">
-					<div id="user-info">
-						<div class="form-field">
-							<input required class="form-control" type="text" name="first_name" placeholder="First Name..">
-						</div>
-						<div class="form-field">
-							<input required class="form-control" type="text" name="name" placeholder="Last Name..">
-						</div>
-						<div class="form-field">
-							<input required class="form-control" type="email" name="email" placeholder="Email..">
-						</div>
-						<hr>
-					</div>
-					
+				<form id="form card-body">
 					<div id="shipping-info">
 						<h2 class="my-5 h2 text-center">Shipping Information:</h2>
-						<hr>
-						<div class="form-field">
-							<input class="form-control" type="text" name="address" placeholder="Address..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="City..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="state" placeholder="State..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
-						</div>
+							<hr>
+
+							<div id="user-info">
+								<div class="row" style="padding-left: 20px; padding-right: 20px;">
+									<div class="form-field md-form mb-3" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+										<input required class="form-control" type="text" name="first_name" placeholder="Andrej">
+										<label for="first_name" class="">Krstné meno</label>
+									</div>
+								</div>
+								<div class="row" style="padding-left: 20px; padding-right: 20px;">
+									<div class="form-field md-form mb-3" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+										<input required class="form-control" type="text" name="name" placeholder="Priezvisko">
+										<label for="name" class="">Priezvisko</label>
+									</div>
+								</div>
+								<div class="row" style="padding-left: 20px; padding-right: 20px;">
+									<div class="form-field md-form mb-3" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+									<input required class="form-control" type="email" name="email" placeholder="Vas@mail.com">
+										<label for="email" class="">Mail</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" style="padding-left: 20px; padding-right: 20px;">
+								<div class="form-field md-form mb-3" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+									<input class="form-control" type="text" name="address" placeholder="Botanická 82">
+									<label for="address" class="">Adresa</label>
+								</div>
+							</div>
+							<div class="row" style="padding-left: 20px; padding-right: 20px;">
+								<div class="form-field md-form mb-3" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+									<input class="form-control" type="text" name="city" placeholder="Banská Bystrica">
+									<label for="city" class="">Mesto</label>
+								</div>
+							</div>
+							<div class="row" style="padding-left: 20px; padding-right: 20px;">
+								<div class="form-field md-form mb-1" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+									<input class="form-control" type="text" name="state" placeholder="Slovensko">
+									<label for="state" class="">Štát</label>
+								</div>
+							</div>
+							<div class="row" style="padding-left: 20px; padding-right: 20px;">
+								<div class="form-field md-form mb-1" style="width: 750px; padding-left: 20px; padding-right: 20px;">
+									<input class="form-control" type="text" name="zipcode" placeholder="974 05">
+									<label for="zip" class="">PSČ</label>
+								</div>
+							</div>
 					</div>
 
 					<hr>
@@ -66,11 +87,13 @@
 				<h5>Total:   ${{order.get_cart_total|floatformat:2}}</h5>
 			</div>
 			<div>
-				<form class="card p-2">
+				<form class="card p-2" action="{% url 'add-coupon' %}" method="POST">
+					{% csrf_token %}
 					<div class="input-group">
-					  <input type="text" class="form-control m-1" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+					  {% comment %}<input type="text" class="form-control m-1" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">{% endcomment %}
+					  {{ couponform.code }}
 					  <div class="input-group-append">
-						<button class="btn btn-secondary btn-md waves-effect m-1" type="button">Redeem</button>
+						<button class="btn btn-secondary btn-md waves-effect m-1" type="submit">Redeem</button>
 					  </div>
 					</div>
 				  </form>
@@ -191,12 +214,10 @@
 
 				cart = {}
 				document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
 				window.location.href = "{% url 'store' %}"
 
 				})
 	    }
 	</script>
 {% endblock content %}
-
-
- 

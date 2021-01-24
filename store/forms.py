@@ -12,3 +12,11 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name',
             'email', 'password1', 'password2',)
+
+class CouponForm(forms.Form):
+    code = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control m-1',
+        'placeholder': 'Promo code',
+        'aria-label' : "Recipient's username", 
+        'aria-describedby' : "basic-addon2"
+    }))

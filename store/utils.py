@@ -15,26 +15,27 @@ def cookieCart(request):
 	cartItems = order['get_cart_items']
 
 	for i in cart:
-		#We use try block to prevent items in cart that may have been removed from causing error
-		try:
-			cartItems += cart[i]['quantity']
 
-			product = Product.objects.get(id=i)
-			total = (product.price * cart[i]['quantity'])
+		try:	
+				if(cart[i]['quantity']>0): #items with negative quantity = lot of freebies  
+					cartItems += cart[i]['quantity']
 
-			order['get_cart_total'] += total
-			order['get_cart_items'] += cart[i]['quantity']
+					product = Product.objects.get(id=i)
+					total = (product.price * cart[i]['quantity'])
 
-			item = {
-				'id':product.id,
-				'product':{'id':product.id,'name':product.name, 'price':product.price, 
-				'imageURL':product.imageURL}, 'quantity':cart[i]['quantity'],
-				'digital':product.digital,'get_total':total,
-				}
-			items.append(item)
+					order['get_cart_total'] += total
+					order['get_cart_items'] += cart[i]['quantity']
 
-			if product.digital == False:
-				order['shipping'] = True
+					item = {
+						'id':product.id,
+						'product':{'id':product.id,'name':product.name, 'price':product.price, 
+						'imageURL':product.imageURL}, 'quantity':cart[i]['quantity'],
+						'digital':product.digital,'get_total':total,
+						}
+					items.append(item)
+
+					if product.digital == False:
+						order['shipping'] = True
 		except:
 			pass
 			
@@ -80,7 +81,6 @@ def guestOrder(request, data):
 		orderItem = OrderItem.objects.create(
 			product=product,
 			order=order,
-			quantity=item['quantity'],
+			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']),
 		)
 	return customer, order
-

@@ -84,6 +84,7 @@
 		    // Return null if not found
 		    return null;
 		}
+
 		var cart = JSON.parse(getCookie('cart'))
 
 		if (cart == undefined){
@@ -92,6 +93,13 @@
 			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 		}
 		console.log('Cart:', cart)
+
+		var code = JSON.parse(getCookie('code'))
+		if (code == undefined){
+			console.log('code: ', code)
+		}
+		console.log('code: ', code)
+
 	
 	</script>
 	

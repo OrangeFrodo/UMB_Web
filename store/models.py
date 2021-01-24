@@ -1,6 +1,7 @@
 from allauth.account.models import EmailAddress
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields import NullBooleanField
 from django.db.models.signals import post_save
 
 # Create your models here.
@@ -52,6 +53,8 @@ class Order(models.Model):
 	complete = models.BooleanField(default=False)
 	transaction_id = models.CharField(max_length=100, null=True)
 
+	coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+
 	def __str__(self):
 		return str(self.id)
 		
@@ -68,6 +71,8 @@ class Order(models.Model):
 	def get_cart_total(self):
 		orderitems = self.orderitem_set.all()
 		total = sum([item.get_total for item in orderitems])
+		if self.coupon:
+			total -= self.coupon.ammount
 		return total 
 
 	@property
@@ -102,6 +107,7 @@ class ShippingAddress(models.Model):
 
 class Coupon(models.Model):
 	code = models.CharField(max_length=15)
+	ammount = models.DecimalField(max_digits=7, decimal_places=2)
 
 	def __str__(self):
 		return self.code

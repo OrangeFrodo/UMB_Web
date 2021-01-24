@@ -1,9 +1,13 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
+from django.shortcuts import redirect
+from django.contrib import messages
 import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder
+from .forms import CouponForm
 
 def store(request):
 	data = cartData(request)
@@ -34,7 +38,13 @@ def checkout(request):
 	order = data['order']
 	items = data['items']
 
-	context = {'items':items, 'order':order, 'cartItems':cartItems}
+	context = {
+		'items':items, 
+		'order':order, 
+		'cartItems':cartItems,
+		'couponform':CouponForm()
+	}
+
 	return render(request, 'store/checkout.html', context)
 
 def updateItem(request):
@@ -90,3 +100,48 @@ def processOrder(request):
 		)
 
 	return JsonResponse('Payment submitted..', safe=False)
+
+def get_coupon(request, code):
+	try:
+		coupon = Coupon.objects.get(code=code)
+		return coupon
+	except ObjectDoesNotExist:
+		messages.info(request, "This coupon does not exist")
+		return render(request, 'store/checkout.html')
+
+def add_coupon(request):
+	data = cartData(request)
+	if request.method == "POST":
+		form = CouponForm(request.POST or None)
+		if form.is_valid():
+			try:
+				code = form.cleaned_data.get('code')
+				if request.user.is_authenticated:
+					customer = request.user.customer
+					order, created = Order.objects.get_or_create(customer=customer, complete=False)
+				else:
+					customer, order = guestOrder(request, data)
+
+				cartItems = data['cartItems']
+				order = data['order']
+				items = data['items']
+
+				context = {
+					'items':items, 
+					'order':order, 
+					'cartItems':cartItems,
+					'couponform':CouponForm()
+				}
+
+				order.coupon = get_coupon(request, code) 
+				order.save()
+				messages.success(request, "Coupon activated")
+				return render(request, 'store/checkout.html', context)
+
+			except ObjectDoesNotExist:
+				messages.info(request, "You do not have an active order")
+				return render(request, 'store/checkout.html')
+	
+	return None
+
+	
