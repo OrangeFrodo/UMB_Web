@@ -119,24 +119,38 @@ def add_coupon(request):
 				if request.user.is_authenticated:
 					customer = request.user.customer
 					order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+					cartItems = data['cartItems']
+					order = data['order']
+					items = data['items']
+
+					context = {
+						'items':items, 
+						'order':order, 
+						'cartItems':cartItems,
+						'couponform':CouponForm()
+					}
+
+					order.coupon = Coupon.objects.get(code=code)
+					order.save()
+					messages.success(request, "Coupon activated")
+					return render(request, 'store/checkout.html', context)
+
 				else:
-					customer, order = guestOrder(request, data)
 
-				cartItems = data['cartItems']
-				order = data['order']
-				items = data['items']
+					cartItems = data['cartItems']
+					order = data['order']
+					items = data['items']
 
-				context = {
-					'items':items, 
-					'order':order, 
-					'cartItems':cartItems,
-					'couponform':CouponForm()
-				}
+					context = {
+						'items':items, 
+						'order':order, 
+						'cartItems':cartItems,
+						'couponform':CouponForm()
+					}
 
-				order.coupon = Coupon.objects.get(code=code)
-				order.save()
-				messages.success(request, "Coupon activated")
-				return render(request, 'store/checkout.html', context)
+					messages.success(request, "Coupon activated")
+					return render(request, 'store/checkout.html', context)
 
 			except ObjectDoesNotExist:
 				messages.info(request, "You do not have an active order")

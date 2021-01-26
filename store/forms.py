@@ -15,7 +15,7 @@ class SignUpForm(UserCreationForm):
 
 class CouponForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control m-1',
+        'class': 'form-control m-1 input-code',
         'placeholder': 'Promo code',
         'aria-label' : "Recipient's username", 
         'aria-describedby' : "basic-addon2"

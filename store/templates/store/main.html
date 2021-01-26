@@ -85,8 +85,6 @@
 		    return null;
 		}
 		var cart = JSON.parse(getCookie('cart'))
-		var code = JSON.parse(getCookie('code'))
-
 		if (cart == undefined){
 			cart = {}
 			console.log('Cart Created!', cart)
@@ -94,7 +92,14 @@
 		}
 		console.log('Cart:', cart)
 
-		console.log('Code:', code)
+		var code = JSON.parse(getCookie('code'))
+		if (code == undefined){
+			code = {}
+			console.log('code: ', code)
+			document.cookie ='code=' + JSON.stringify(code) + ";domain=;path=/"
+		}
+		console.log('code: ', code)
+
 	
 	</script>
 	
@@ -138,6 +143,7 @@
 	<!--/.Footer-->
 
 	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/promo_code.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
