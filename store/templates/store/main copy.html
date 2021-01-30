@@ -45,6 +45,7 @@
 	
 	  </style>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
 	<script type="text/javascript">
 		var user = '{{request.user}}'
 
@@ -87,7 +88,7 @@
 
 		var cart = JSON.parse(getCookie('cart'))
 		if (cart == undefined){
-			cart = {}
+			cart = {temporary_id : uuidv4()}
 			console.log('Cart Created!', cart)
 			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 		}

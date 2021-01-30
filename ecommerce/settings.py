@@ -40,12 +40,19 @@ INSTALLED_APPS = [
 
     'store.apps.StoreConfig',
     'crispy_forms',
+    'admin_menu',
 
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
 ]
+
+ADMIN_STYLE = {
+    'primary-color': '#2B3746',
+    'secondary-color': '#354151',
+    'tertiary-color': '#F2F9FC'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,6 +87,8 @@ ACCOUNT_FORMS = {
     'signup': 'store.forms.SignUpForm',
     'add:email': 'store.forms.MyAddEmailForm'
 }
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_VERIFICATION = "none"

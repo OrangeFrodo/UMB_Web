@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 import datetime
 from .models import * 
-from .utils import cookieCart, cartData, guestOrder
+from .utils import cookieCart, cartData, guestOrder, cuponOrder
 from .forms import CouponForm
 
 def store(request):
@@ -137,10 +137,19 @@ def add_coupon(request):
 					return render(request, 'store/checkout.html', context)
 
 				else:
+					order = cuponOrder(request, data, code)
 
 					cartItems = data['cartItems']
 					order = data['order']
 					items = data['items']
+					
+					ammount = "ammount"
+					obj = Coupon.objects.get(code=code)
+					field_object = Coupon._meta.get_field(ammount)
+					field_value = field_object.value_from_object(obj)
+
+					print(field_value)
+					order['get_cart_total'] -= field_value
 
 					context = {
 						'items':items, 

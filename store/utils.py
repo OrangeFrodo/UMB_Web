@@ -1,17 +1,19 @@
 import json
+import uuid
 from .models import *
 
 def cookieCart(request):
-
 	#Create empty cart for now for non-logged in user
 	try:
 		cart = json.loads(request.COOKIES['cart'])
 	except:
-		cart = {}
+		cart = {'temporary_id' : uuid.uuid4()}
 		print('CART:', cart)
 
+	temporary_id = cart['temporary_id']
+
 	items = []
-	order = {'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
+	order = {'get_cart_total':0, 'get_cart_items':0, 'temporary_id': temporary_id, 'shipping':False}
 	cartItems = order['get_cart_items']
 
 	for i in cart:
@@ -62,7 +64,9 @@ def guestOrder(request, data):
 	email = data['form']['email']
 
 	cookieData = cookieCart(request)
+	temporary_id = cookieData['order']['temporary_id']
 	items = cookieData['items']
+	print(cookieData)
 
 	customer, created = Customer.objects.get_or_create(
 			email=email,
@@ -71,10 +75,13 @@ def guestOrder(request, data):
 	customer.first_name = first_name
 	customer.save()
 
-	order = Order.objects.create(
-		customer=customer,
+	order, created = Order.objects.get_or_create(
+		temporary_id=temporary_id,
 		complete=False,
 		)
+
+	order.customer = customer
+	order.save()
 
 	for item in items:
 		product = Product.objects.get(id=item['id'])
@@ -84,3 +91,26 @@ def guestOrder(request, data):
 			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']),
 		)
 	return customer, order
+
+
+def cuponOrder(request, data, code):
+
+	temporary_id = data['order']['temporary_id']
+	cookieData = cookieCart(request)
+	items = cookieData['items']
+
+	order, created = Order.objects.get_or_create(
+		temporary_id = temporary_id,
+		complete=False,
+		defaults={'coupon': Coupon.objects.get(code=code)}
+		)
+
+	for item in items:
+		product = Product.objects.get(id=item['id'])
+		orderItem = OrderItem.objects.create(
+			product=product,
+			order=order,
+			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']),
+		)
+
+	return order
