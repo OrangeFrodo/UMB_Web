@@ -46,6 +46,15 @@
 					<div style="flex:1"><p>${{item.get_total|floatformat:2}}</p></div>
 				</div>
 				{% endfor %}
+				{% if coupon %}
+				<div class="cart-row text-success">
+					<div style="flex:2"><img class="row-image" src="{% static 'images/percent.png' %}"></div>
+					<div style="flex:2"><p>"{{coupon}}" Promo code</p></div>
+					<div style="flex:1"><p>- {{ammount|floatformat:0}}%</p></div>
+					<div style="flex:1"><p>x1</p></div>
+					<div style="flex:1"><p></p></div>
+				</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

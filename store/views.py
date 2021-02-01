@@ -24,15 +24,13 @@ def store(request):
 def cart(request):
 	data = cartData(request)
 
-	cartItems = data['cartItems']
-	order = data['order']
-	items = data['items']
+	if request.user.is_authenticated:
+		num = request.session.get('code')
+		num_value = request.session.get('code_value')
 
-	context = {'items':items, 'order':order, 'cartItems':cartItems}
-	return render(request, 'store/cart.html', context)
-
-def checkout(request):
-	data = cartData(request)
+	else:
+		num = None
+		num_value = None
 	
 	cartItems = data['cartItems']
 	order = data['order']
@@ -40,7 +38,37 @@ def checkout(request):
 
 	context = {
 		'items':items, 
-		'order':order, 
+		'order':order,
+		'coupon':num,
+		'ammount':num_value,
+		'cartItems':cartItems,
+	}
+
+	return render(request, 'store/cart.html', context)
+
+def checkout(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+
+	if request.user.is_authenticated:
+		try:
+			num = order.coupon.code
+			num_value = request.session.get('code_value')
+		except:
+			num = request.session.get('code')
+			num_value = request.session.get('code_value')
+	else:
+		num = None
+		num_value = None
+
+	context = {
+		'items':items, 
+		'order':order,
+		'coupon':num,
+		'ammount':num_value,
 		'cartItems':cartItems,
 		'couponform':CouponForm()
 	}
@@ -99,6 +127,16 @@ def processOrder(request):
 		zipcode=data['shipping']['zipcode'],
 		)
 
+	num = request.session.get('code')
+	num_value = request.session.get('code_value')
+	if num_value and num is not None:
+		num_value = None
+		num = None
+		request.session['code_value'] = None
+		request.session['code'] = None
+	else:
+		pass
+
 	return JsonResponse('Payment submitted..', safe=False)
 
 def get_coupon(request, code):
@@ -114,8 +152,23 @@ def add_coupon(request):
 	if request.method == "POST":
 		form = CouponForm(request.POST or None)
 		if form.is_valid():
+			code = form.cleaned_data.get('code')
 			try:
-				code = form.cleaned_data.get('code')
+				num = request.session.get('code')
+				num_value = request.session.get('code_value')
+
+				if num is None:
+					num = code
+				request.session['code'] = code
+
+				obj = Coupon.objects.get(code=code)
+				field_object = Coupon._meta.get_field("ammount")
+				field_value = field_object.value_from_object(obj)
+
+				if num_value is None:
+					num_value = field_value
+				request.session['code_value'] = field_value
+
 				if request.user.is_authenticated:
 					customer = request.user.customer
 					order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -125,7 +178,9 @@ def add_coupon(request):
 					items = data['items']
 
 					context = {
-						'items':items, 
+						'items':items,
+						'coupon': code,
+						'ammount':field_value,
 						'order':order, 
 						'cartItems':cartItems,
 						'couponform':CouponForm()
@@ -143,16 +198,16 @@ def add_coupon(request):
 					order = data['order']
 					items = data['items']
 					
-					ammount = "ammount"
 					obj = Coupon.objects.get(code=code)
-					field_object = Coupon._meta.get_field(ammount)
+					field_object = Coupon._meta.get_field("ammount")
 					field_value = field_object.value_from_object(obj)
 
-					print(field_value)
 					order['get_cart_total'] -= field_value
 
 					context = {
-						'items':items, 
+						'items':items,
+						'coupon': code,
+						'ammount':field_value, 
 						'order':order, 
 						'cartItems':cartItems,
 						'couponform':CouponForm()
@@ -162,18 +217,36 @@ def add_coupon(request):
 					return render(request, 'store/checkout.html', context)
 
 			except ObjectDoesNotExist:
-				messages.info(request, "You do not have an active order")
-				
-				cartItems = data['cartItems']
-				order = data['order']
-				items = data['items']
+				messages.info(request, "Coupon does not exists ")
+				if request.user.is_authenticated:
+					num_value = request.session.get('code_value')
 
-				context = {
-					'items':items, 
-					'order':order, 
-					'cartItems':cartItems,
-					'couponform':CouponForm()
-				}
+					cartItems = data['cartItems']
+					order = data['order']
+					items = data['items']
+					
+					num = order.coupon.code
+
+					context = {
+						'items':items, 
+						'order':order,
+						'coupon': num,
+						'ammount':num_value,
+						'cartItems':cartItems,
+						'couponform':CouponForm()
+					}
+
+				else:
+					cartItems = data['cartItems']
+					order = data['order']
+					items = data['items']
+
+					context = {
+						'items':items, 
+						'order':order,
+						'cartItems':cartItems,
+						'couponform':CouponForm()
+					}
 
 				return render(request, 'store/checkout.html', context)
 	
