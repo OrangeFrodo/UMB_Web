@@ -108,6 +108,7 @@ class ShippingAddress(models.Model):
 class Coupon(models.Model):
 	code = models.CharField(max_length=15)
 	ammount = models.FloatField()
+	used_num = models.IntegerField(blank=True, null=True)
 
 	def __str__(self):
 		return self.code

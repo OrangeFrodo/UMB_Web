@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
@@ -8,6 +9,9 @@ import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder, cuponOrder
 from .forms import CouponForm
+
+def order_email(request):
+	return render(request, 'email_confirmation.html')
 
 def store(request):
 	data = cartData(request)
@@ -24,17 +28,24 @@ def store(request):
 def cart(request):
 	data = cartData(request)
 
-	if request.user.is_authenticated:
-		num = request.session.get('code')
-		num_value = request.session.get('code_value')
-
-	else:
-		num = None
-		num_value = None
-	
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
+
+	if request.user.is_authenticated:
+		num = request.session.get('code')
+		num_value = request.session.get('code_value')
+		if order.get_cart_items == 0:
+			order.coupon = None
+			order.save()
+			request.session['code_value'] = None
+			request.session['code'] = None
+			num = request.session.get('code')
+		else:
+			pass
+	else:
+		num = None
+		num_value = None
 
 	context = {
 		'items':items, 
@@ -126,6 +137,12 @@ def processOrder(request):
 		state=data['shipping']['state'],
 		zipcode=data['shipping']['zipcode'],
 		)
+	
+	if order.coupon:
+		obj_coupon = order.coupon
+		obj = Coupon.objects.get(code=obj_coupon)
+		obj.used_num += 1
+		obj.save()
 
 	num = request.session.get('code')
 	num_value = request.session.get('code_value')
