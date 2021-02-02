@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Saul Gadgets</title>
+
+        <style type="text/css">
+        html {
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-background-size: 100%;
+        }
+
+        body {
+            width: 100%;
+            font-family: arial;
+            font-size: 14px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        a {
+            color: 111;
+        }
+        </style>
+    </head>
+
+    <body>
+       <div><center>
+            <div>
+                <tr>
+                    <td>
+                        <center>
+                            <h1>Saul Gadgets - Order confirmation</h1>
+                        </center>
+                    </td>
+                </tr>
+            </div>
+                
+            <div>
+                <tr>
+                    <td>
+                        <p>Nice! Your order is successful and will be sent shortly!</p>
+                    </td>
+                </tr>
+            </div>
+
+            <div>
+                {% for item in items %}
+                <div class="cart-row">
+                    <div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
+                    <div style="flex:2"><p>{{item.product.name}}</p></div>
+                    <div style="flex:1"><p>${{item.product.price|floatformat:2}}</p></div>
+                    <div style="flex:1">
+                        <p class="quantity">{{item.quantity}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </center></div>
+        
+    </body>
+</html>

@@ -27,6 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Emails
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+# Emails handling registration problem
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # Application definition
 
@@ -87,11 +95,6 @@ ACCOUNT_FORMS = {
     'signup': 'store.forms.SignUpForm',
     'add:email': 'store.forms.MyAddEmailForm'
 }
-
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_EMAIL_VERIFICATION = "none"
 
 
 AUTHENTICATION_BACKENDS = [

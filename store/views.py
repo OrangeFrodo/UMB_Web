@@ -9,9 +9,21 @@ import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder, cuponOrder
 from .forms import CouponForm
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
-def order_email(request):
-	return render(request, 'email_confirmation.html')
+def order_confirmation(request):
+	data = cartData(request)
+
+	order = data['order']
+	items = data['items']
+
+	context = {
+		'order':order,
+		'items':items
+	}
+
+	return render(request, 'emails/order_confirmation.html', context)
 
 def store(request):
 	data = cartData(request)
@@ -153,6 +165,11 @@ def processOrder(request):
 		request.session['code'] = None
 	else:
 		pass
+	
+	items = order.orderitem_set.all()
+
+	html = render_to_string('emails/order_confirmation.html', {'items': items})
+	send_mail('Order confirmation', 'Your order has been sent!!', 'noreply@saulgadgets.com', ['noreply@saulgadgets.com','mail@saulgadgets.com', customer.email], fail_silently=False, html_message=html)
 
 	return JsonResponse('Payment submitted..', safe=False)
 
@@ -235,35 +252,27 @@ def add_coupon(request):
 
 			except ObjectDoesNotExist:
 				messages.info(request, "Coupon does not exists ")
+
+				cartItems = data['cartItems']
+				order = data['order']
+				items = data['items']
+
 				if request.user.is_authenticated:
-					num_value = request.session.get('code_value')
-
-					cartItems = data['cartItems']
-					order = data['order']
-					items = data['items']
-					
-					num = order.coupon.code
-
-					context = {
-						'items':items, 
-						'order':order,
-						'coupon': num,
-						'ammount':num_value,
-						'cartItems':cartItems,
-						'couponform':CouponForm()
-					}
-
+					if order.coupon != None:
+						order.coupon = None
+						order.save()
+						request.session['code'] = None
+						request.session['code_value'] = None
 				else:
-					cartItems = data['cartItems']
-					order = data['order']
-					items = data['items']
+					request.session['code'] = None
+					request.session['code_value'] = None
 
-					context = {
-						'items':items, 
-						'order':order,
-						'cartItems':cartItems,
-						'couponform':CouponForm()
-					}
+				context = {
+					'items':items, 
+					'order':order,
+					'cartItems':cartItems,
+					'couponform':CouponForm()
+				}
 
 				return render(request, 'store/checkout.html', context)
 	
