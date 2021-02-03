@@ -6,6 +6,12 @@ def make_refund_accepted(modeladmin, request, queryset):
     queryset.update(refund_requested=False, refund_granted=True)
     make_refund_accepted.short_description = 'Update orders to refund granted'
 
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['order',
+                    'product',
+                    'quantity'
+                ]
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id',
                     'customer', 
@@ -39,6 +45,6 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Customer)
 admin.site.register(Product)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem)
+admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(ShippingAddress)
 admin.site.register(Coupon)
