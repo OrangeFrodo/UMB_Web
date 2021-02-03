@@ -1,10 +1,25 @@
 from django.contrib import admin
+import datetime
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import *
 
 def make_refund_accepted(modeladmin, request, queryset):
     queryset.update(refund_requested=False, refund_granted=True)
     make_refund_accepted.short_description = 'Update orders to refund granted'
+
+def admin_order_being_delivered(modeladmin, request, queryset):
+    queryset.update(shipped_date = datetime.datetime.now())
+    queryset.update(being_delivered=True)
+    
+    for order in queryset:
+        order.save()
+        items = order.orderitem_set.all()
+        html = render_to_string('emails/order_sent.html', {'items': items, 'order':order,})
+        send_mail('Order confirmation', 'Your order has been sent!!', 'noreply@saulgadgets.com', ['noreply@saulgadgets.com','mail@saulgadgets.com', order.customer.email], fail_silently=False, html_message=html)
+
+admin_order_being_delivered.short_description = 'Shipped order'
 
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['order',
@@ -40,7 +55,7 @@ class OrderAdmin(admin.ModelAdmin):
         'temporary_id'
     ]
 
-    actions = [make_refund_accepted]
+    actions = [make_refund_accepted, admin_order_being_delivered]
 
 admin.site.register(Customer)
 admin.site.register(Product)

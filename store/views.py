@@ -271,11 +271,12 @@ def add_coupon(request):
 
 				cartItems = data['cartItems']
 				items = data['items']
-				temporary_id = data['order']['temporary_id']
-
-				instance = Order.objects.filter(temporary_id=temporary_id)
-				instance.delete()
-
+				
+				if not request.user.is_authenticated:
+					temporary_id = data['order']['temporary_id']
+					instance = Order.objects.filter(temporary_id=temporary_id)
+					instance.delete()
+				
 				order = data['order']
 
 
