@@ -95,12 +95,17 @@ def guestOrder(request, data):
 
 
 def cuponOrder(request, data, code):
+	cookieData = cookieCart(request)
+
 	temporary_id = data['order']['temporary_id']
+	items = cookieData['items']
 
 	order, created = Order.objects.update_or_create(
 		temporary_id = temporary_id,
 		complete=False,
 		defaults={'coupon': Coupon.objects.get(code=code)}
 		)
+
+	order.save()
 
 	return order

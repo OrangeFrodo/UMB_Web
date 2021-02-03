@@ -270,8 +270,14 @@ def add_coupon(request):
 				messages.info(request, "Coupon does not exists ")
 
 				cartItems = data['cartItems']
-				order = data['order']
 				items = data['items']
+				temporary_id = data['order']['temporary_id']
+
+				instance = Order.objects.filter(temporary_id=temporary_id)
+				instance.delete()
+
+				order = data['order']
+
 
 				if request.user.is_authenticated:
 					if order.coupon != None:
@@ -279,9 +285,9 @@ def add_coupon(request):
 						num_value = request.session.get('code_value')
 						order.save()
 					else:
+						num_value = request.session.get('code_value')
 						num = request.session.get('code')
 						num = None
-						num_value = request.session.get('code_value')
 						num_value = None
 				else:
 					num = request.session.get('code')
