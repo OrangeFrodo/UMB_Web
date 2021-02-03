@@ -243,7 +243,7 @@ def add_coupon(request):
 
 				else:
 					order = cuponOrder(request, data, code)
-
+					
 					cartItems = data['cartItems']
 					order = data['order']
 					items = data['items']
@@ -262,7 +262,7 @@ def add_coupon(request):
 						'cartItems':cartItems,
 						'couponform':CouponForm()
 					}
-
+				
 					messages.success(request, "Coupon activated")
 					return render(request, 'store/checkout.html', context)
 

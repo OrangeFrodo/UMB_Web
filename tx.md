@@ -1,5 +1,4 @@
-1. Promo code - discount of total sum
-2. Email - Sending email after transaction
+1. Promo code - fix for non-authenticated the complete
+
 3. Customer profile - Product following
-4. Seting UP UI 
-5. Transaction via PayPal
+4. Seting UP UI
