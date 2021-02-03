@@ -1,7 +1,7 @@
 from allauth.account.models import EmailAddress
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.fields import NullBooleanField
+from django.db.models.fields import CharField, NullBooleanField
 from django.db.models.signals import post_save
 
 # Create your models here.
@@ -53,7 +53,14 @@ class Order(models.Model):
 	complete = models.BooleanField(default=False)
 	transaction_id = models.CharField(max_length=100, null=True)
 	temporary_id = models.CharField(max_length=100, null=True)
+	
 	coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+
+	being_delivered = models.BooleanField(default=False)
+	recived = models.BooleanField(default=False)
+	refund_requested = models.BooleanField(default=False)
+	refund_granted = models.BooleanField(default=False)
+
 
 	def __str__(self):
 		return str(self.id)
@@ -112,3 +119,12 @@ class Coupon(models.Model):
 
 	def __str__(self):
 		return self.code
+
+class Refund(models.Model):
+	order = models.ForeignKey(Order, on_delete=models.CASCADE)
+	reason = models.TextField()
+	accepted = models.BooleanField(default=False)
+	email = models.EmailField()
+
+	def __str__(self):
+		return f"{self.pk}"

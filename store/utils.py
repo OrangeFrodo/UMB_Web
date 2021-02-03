@@ -45,8 +45,9 @@ def cookieCart(request):
 
 def cartData(request):
 	if request.user.is_authenticated:
+		cookieData = cookieCart(request)
 		customer = request.user.customer
-		order, created = Order.objects.get_or_create(customer=customer, complete=False)
+		order, created = Order.objects.get_or_create(customer=customer, temporary_id=cookieData['order']['temporary_id'],complete=False)
 		items = order.orderitem_set.all()
 		cartItems = order.get_cart_items
 	else:
@@ -83,6 +84,11 @@ def guestOrder(request, data):
 	order.customer = customer
 	order.save()
 
+	
+	print(cookieData['order']['get_cart_items'])
+	print(cookieData['order']['get_cart_total'])
+
+
 	for item in items:
 		product = Product.objects.get(id=item['id'])
 		orderItem = OrderItem.objects.create(
@@ -90,6 +96,9 @@ def guestOrder(request, data):
 			order=order,
 			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']),
 		)
+		
+	print(items)
+	
 	return customer, order
 
 
@@ -103,14 +112,6 @@ def cuponOrder(request, data, code):
 		temporary_id = temporary_id,
 		complete=False,
 		defaults={'coupon': Coupon.objects.get(code=code)}
-		)
-
-	for item in items:
-		product = Product.objects.get(id=item['id'])
-		orderItem = OrderItem.objects.create(
-			product=product,
-			order=order,
-			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']),
 		)
 
 	return order

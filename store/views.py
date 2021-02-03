@@ -1,16 +1,19 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from django.shortcuts import render
+from django.contrib import messages
 from django.http import JsonResponse
+from django.views.generic import View
 import json
 from django.shortcuts import redirect
 from django.contrib import messages
 import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder, cuponOrder
-from .forms import CouponForm
+from .forms import CouponForm, RefundForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+
 
 def order_confirmation(request):
 	data = cartData(request)
@@ -45,17 +48,21 @@ def cart(request):
 	items = data['items']
 
 	if request.user.is_authenticated:
-		num = request.session.get('code')
-		num_value = request.session.get('code_value')
 		if order.get_cart_items == 0:
 			order.coupon = None
 			order.save()
-			request.session['code_value'] = None
-			request.session['code'] = None
-			num = request.session.get('code')
+		if order.coupon != None:
+			num = order.coupon
+			num_value = request.session.get('code_value')
+			order.save()
 		else:
-			pass
+			num = request.session.get('code')
+			num = None
+			num_value = request.session.get('code_value')
+			num_value = None
 	else:
+		num = request.session.get('code')
+		num_value = request.session.get('code_value')
 		num = None
 		num_value = None
 
@@ -77,14 +84,19 @@ def checkout(request):
 	items = data['items']
 
 	if request.user.is_authenticated:
-		try:
-			num = order.coupon.code
+		if order.coupon != None:
+			num = order.coupon
 			num_value = request.session.get('code_value')
-		except:
+			order.save()
+		else:
 			num = request.session.get('code')
+			num = None
 			num_value = request.session.get('code_value')
+			num_value = None
 	else:
+		num = request.session.get('code')
 		num = None
+		num_value = request.session.get('code_value')
 		num_value = None
 
 	context = {
@@ -136,6 +148,9 @@ def processOrder(request):
 	total = float(data['form']['total'])
 	order.transaction_id = transaction_id
 
+	print(total)
+	print(order.get_cart_total)
+
 	if total == order.get_cart_total:
 		order.complete = True
 	order.save()
@@ -166,9 +181,10 @@ def processOrder(request):
 	else:
 		pass
 	
+
 	items = order.orderitem_set.all()
 
-	html = render_to_string('emails/order_confirmation.html', {'items': items})
+	html = render_to_string('emails/order_confirmation.html', {'items': items, 'order':order,})
 	send_mail('Order confirmation', 'Your order has been sent!!', 'noreply@saulgadgets.com', ['noreply@saulgadgets.com','mail@saulgadgets.com', customer.email], fail_silently=False, html_message=html)
 
 	return JsonResponse('Payment submitted..', safe=False)
@@ -259,17 +275,25 @@ def add_coupon(request):
 
 				if request.user.is_authenticated:
 					if order.coupon != None:
-						order.coupon = None
+						num = order.coupon
+						num_value = request.session.get('code_value')
 						order.save()
-						request.session['code'] = None
-						request.session['code_value'] = None
+					else:
+						num = request.session.get('code')
+						num = None
+						num_value = request.session.get('code_value')
+						num_value = None
 				else:
-					request.session['code'] = None
-					request.session['code_value'] = None
+					num = request.session.get('code')
+					num = None
+					num_value = request.session.get('code_value')
+					num_value = None
 
 				context = {
 					'items':items, 
 					'order':order,
+					'coupon': num,
+					'ammount':num_value, 
 					'cartItems':cartItems,
 					'couponform':CouponForm()
 				}
@@ -278,4 +302,39 @@ def add_coupon(request):
 	
 	return None
 
-	
+
+class RequestRefundView(View):
+
+	def get(self, *args, **kwargs):
+		form = RefundForm()
+		context = {
+			'form': form
+		}
+		return render(self.request, "store/request_refund.html", context)
+
+	def post(self, *args, **kwargs):
+		form = RefundForm(self.request.POST)
+		if form.is_valid():
+			ref_code = form.cleaned_data.get('ref_code')
+			message = form.cleaned_data.get('message')
+			email = form.cleaned_data.get('email')
+
+			try:
+				order = Order.objects.get(temporary_id=ref_code)
+				order.refund_requested = True
+				order.save()
+
+				refund = Refund()
+				refund.order = order
+				refund.reason = message
+				refund.email = email
+				refund.save()
+
+				messages.info(self.request, "Your request was received")
+
+				return redirect("/request_refund")
+
+			except ObjectDoesNotExist:
+				messages.info(self.request, "This order does not exist.")
+				print("pelko")
+				return redirect("/request_refund")
