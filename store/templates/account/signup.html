@@ -5,24 +5,42 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
+<div class="container" style="margin: 100px 0px 80px">
   <main>
+    <section class="py-5 bg-light mb-5">
+      <div class="container">
+        <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+        <div class="col-lg-6">
+          <h1 class="h2 text-uppercase mb-0">Registrácia</h1>
+        </div>
+        <div class="col-lg-6 text-lg-right">
+          <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
+            <li class="breadcrumb-item"><a href="{% url 'store' %}">Domov</a></li>
+          </ol>
+          </nav>
+        </div>
+        </div>
+      </div>
+      </section>
     <div class="container">
       <section class="mb-4">
         <div class="row wow fadeIn">
           <div class='col-6 offset-3'>
-            <h1>{% trans "Sign Up" %}</h1>
-            <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+            <h1>{% trans "Registrácia" %}</h1>
+            <p>{% blocktrans %}Už ste u nás registrovaný? Prosím <a href="{{ login_url }}">prihláste sa</a>.{% endblocktrans %}</p>
             <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
               {% csrf_token %}
               {{ form|crispy }}
               {% if redirect_field_value %}
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
               {% endif %}
-              <button class='btn btn-primary' type="submit">{% trans "Sign Up" %} &raquo;</button>
+              <button class='btn btn-primary btn-dark' type="submit">{% trans "Registrovať" %} &raquo;</button>
             </form>
           </div>
         </div>
       </section>
     </div>
   </main>
+</div>
 {% endblock %}

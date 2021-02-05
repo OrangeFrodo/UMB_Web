@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.fields import CharField, NullBooleanField
 from django.db.models.signals import post_save
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
@@ -12,13 +13,15 @@ class Customer(models.Model):
 	last_name = models.CharField(max_length=50, null=True, blank=True)
 	name = models.CharField(max_length=200, null=True)
 	email = models.CharField(max_length=200)
+	phone = PhoneNumberField(null=False, blank=True, unique=True)
 
 	def create_customer_profile(sender, instance, created, **kwargs):
 		if created:
 			Customer.objects.create(user=instance, 
 									name=instance.username, 
 									email=instance.email, 
-									first_name= instance.first_name, 
+									first_name= instance.first_name,
+									phone = instance.phone, 
 									last_name=instance.last_name)
 
 			EmailAddress.objects.create(user=instance,

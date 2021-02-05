@@ -7,11 +7,11 @@ class SignUpForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, help_text='Last Name')
     email = forms.EmailField(max_length=150, help_text='Email')
 
-
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name',
             'email', 'password1', 'password2',)
+
 
 class CouponForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={

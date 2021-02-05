@@ -63,6 +63,7 @@ def guestOrder(request, data):
 	first_name = data['form']['first_name']
 	name = data['form']['name']
 	email = data['form']['email']
+	phone = data['form']['phone']
 
 	cookieData = cookieCart(request)
 	temporary_id = cookieData['order']['temporary_id']
@@ -70,6 +71,7 @@ def guestOrder(request, data):
 
 	customer, created = Customer.objects.get_or_create(
 			email=email,
+			phone=phone,
 			)
 	customer.name = name
 	customer.first_name = first_name

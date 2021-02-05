@@ -41,16 +41,24 @@
     </ul>
 
     <!-- Right -->
-    <a  href="{% url 'request_refund' %}"class="btn btn-sm btn-warning">Refund</a>
     
     <ul class="navbar-nav nav-flex-icons">
         <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'cart' %}">
-              <span class="badge red z-depth-1 mr-1">{{cartItems}}</span>
-              <i class="fas fa-shopping-cart"></i>
+              <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+              {% if cartItems != 0%}
+              <small class="text-gray">({{cartItems}})</small></a>
+              {% else %}
+              <small class="text-gray"></small></a>
+              {% endif %}
             </a>
-          </li>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Logout</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a></li>
+        {% endif %}
     </ul>
 
     </div>

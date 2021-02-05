@@ -13,27 +13,8 @@
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-	<link href="{% static 'css/mdb.lite.css' %}" rel="stylesheet">
+	<link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
 	<link href="{% static 'css/style.min.css' %}" rel="stylesheet">
-
-	<!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-    <!-- Lightbox-->
-    <link rel="stylesheet" href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}">
-    <!-- Range slider-->
-    <link rel="stylesheet" href="{% static 'vendor/nouislider/nouislider.min.css' %}">
-    <!-- Bootstrap select-->
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap-select/css/bootstrap-select.min.css' %}">
-    <!-- Owl Carousel-->
-    <link rel="stylesheet" href="{% static 'vendor/owl.carousel2/assets/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/owl.carousel2/assets/owl.theme.default.css' %}">
-    <!-- Google fonts-->
-    <!-- theme stylesheet-->
-    <link rel="stylesheet" href="{% static 'css/style.violet.css' %}" id="theme-stylesheet">
-    <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <!-- Favicon-->
-    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
 	<style type="text/css">
 		html,
 		body,
@@ -65,7 +46,6 @@
 	  </style>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
-
 	<script type="text/javascript">
 		var user = '{{request.user}}'
 
@@ -105,6 +85,7 @@
 		    // Return null if not found
 		    return null;
 		}
+
 		var cart = JSON.parse(getCookie('cart'))
 		if (cart == undefined){
 			cart = {temporary_id : uuidv4()}
@@ -129,14 +110,9 @@
 <body>
 
 	{% include "store/navbar.html"%}
-	
 
      <div class="container">
-		{% include "store/slides.html"%}
-		{% include "store/prebud.html"%}
-			<br>
-			<br>
-			<br>
+            <br>
             {% block content %}
 
 
@@ -152,7 +128,7 @@
               <h6 class="text-uppercase mb-3">Customer services</h6>
               <ul class="list-unstyled mb-0">
                 <li><a class="footer-link" href="#">Help &amp; Contact Us</a></li>
-                <li><a  href="{% url 'request_refund' %}"class="footer-link">Vrátenie tovaru</a></li>
+                <li><a class="footer-link" href="#">Returns &amp; Refunds</a></li>
                 <li><a class="footer-link" href="#">Online Stores</a></li>
                 <li><a class="footer-link" href="#">Terms &amp; Conditions</a></li>
               </ul>
@@ -181,11 +157,17 @@
               <div class="col-lg-6">
                 <p class="small text-muted mb-0">&copy; 2020 All rights reserved.</p>
               </div>
+              <div class="col-lg-6 text-lg-right">
+                <p class="small text-muted mb-0">Template designed by <a class="text-white reset-anchor" href="https://bootstraptemple.com/p/bootstrap-ecommerce">Bootstrap Temple</a></p>
+              </div>
             </div>
           </div>
         </div>
       </footer>
 	<!--/.Footer-->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/promo_code.js' %}"></script>
@@ -193,6 +175,7 @@
 	<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+
 
 </body>
 </html>

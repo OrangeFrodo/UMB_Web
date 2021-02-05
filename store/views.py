@@ -1,3 +1,4 @@
+from django import setup
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from django.shortcuts import render
@@ -50,6 +51,7 @@ def cart(request):
 	if request.user.is_authenticated:
 		if order.get_cart_items == 0:
 			order.coupon = None
+			request.session['code'] = None
 			order.save()
 		if order.coupon != None:
 			num = order.coupon
@@ -57,14 +59,18 @@ def cart(request):
 			order.save()
 		else:
 			num = request.session.get('code')
-			num = None
 			num_value = request.session.get('code_value')
-			num_value = None
+
 	else:
 		num = request.session.get('code')
 		num_value = request.session.get('code_value')
-		num = None
-		num_value = None
+	
+	print(num)
+	print(num_value)
+	
+	if num != None:
+		if not request.user.is_authenticated:
+			data['order']['get_cart_total'] -= num_value	
 
 	context = {
 		'items':items, 
@@ -72,6 +78,7 @@ def cart(request):
 		'coupon':num,
 		'ammount':num_value,
 		'cartItems':cartItems,
+		'couponform':CouponForm()
 	}
 
 	return render(request, 'store/cart.html', context)
@@ -79,25 +86,20 @@ def cart(request):
 def checkout(request):
 	data = cartData(request)
 
+	num = request.session.get('code')
+	num_value = request.session.get('code_value')
+
+	print(num)
+	print(num_value)
+
 	cartItems = data['cartItems']
 	order = data['order']
 	items = data['items']
 
-	if request.user.is_authenticated:
-		if order.coupon != None:
-			num = order.coupon
-			num_value = request.session.get('code_value')
-			order.save()
-		else:
-			num = request.session.get('code')
-			num = None
-			num_value = request.session.get('code_value')
-			num_value = None
-	else:
-		num = request.session.get('code')
-		num = None
-		num_value = request.session.get('code_value')
-		num_value = None
+	if num != None:
+		if not request.user.is_authenticated:
+			data['order']['get_cart_total'] -= num_value
+
 
 	context = {
 		'items':items, 
@@ -181,7 +183,6 @@ def processOrder(request):
 	else:
 		pass
 	
-
 	items = order.orderitem_set.all()
 
 	html = render_to_string('emails/order_confirmation.html', {'items': items, 'order':order,})
@@ -195,7 +196,7 @@ def get_coupon(request, code):
 		return coupon
 	except ObjectDoesNotExist:
 		messages.info(request, "This coupon does not exist")
-		return render(request, 'store/checkout.html')
+		return render(request, 'store/cart.html')
 
 def add_coupon(request):
 	data = cartData(request)
@@ -227,19 +228,33 @@ def add_coupon(request):
 					order = data['order']
 					items = data['items']
 
+					order.coupon = Coupon.objects.get(code=code)
+					order.save()
+
+					if order.get_cart_items == 0:
+						order.coupon = None
+						order.save()
+					if order.coupon != None:
+						num = order.coupon
+						num_value = request.session.get('code_value')
+						order.save()
+					else:
+						num = request.session.get('code')
+						num_value = request.session.get('code_value')
+						num_value = None
+						num = None
+
 					context = {
 						'items':items,
-						'coupon': code,
-						'ammount':field_value,
+						'coupon': num,
+						'ammount':num_value,
 						'order':order, 
 						'cartItems':cartItems,
 						'couponform':CouponForm()
 					}
 
-					order.coupon = Coupon.objects.get(code=code)
-					order.save()
 					messages.success(request, "Coupon activated")
-					return render(request, 'store/checkout.html', context)
+					return render(request, 'store/cart.html', context)
 
 				else:
 					order = cuponOrder(request, data, code)
@@ -252,7 +267,12 @@ def add_coupon(request):
 					field_object = Coupon._meta.get_field("ammount")
 					field_value = field_object.value_from_object(obj)
 
-					order['get_cart_total'] -= field_value
+					data['order']['get_cart_total'] -= field_value
+
+					if order['get_cart_total'] < 0:
+						code = None
+						field_value = None
+						order['get_cart_total'] = 0
 
 					context = {
 						'items':items,
@@ -262,12 +282,14 @@ def add_coupon(request):
 						'cartItems':cartItems,
 						'couponform':CouponForm()
 					}
-				
+
 					messages.success(request, "Coupon activated")
-					return render(request, 'store/checkout.html', context)
+					return render(request, 'store/cart.html', context)
 
 			except ObjectDoesNotExist:
 				messages.info(request, "Coupon does not exists ")
+				num = request.session.get('code')
+				num_value = request.session.get('code_value')
 
 				cartItems = data['cartItems']
 				items = data['items']
@@ -278,23 +300,20 @@ def add_coupon(request):
 					instance.delete()
 				
 				order = data['order']
+				
+				if num_value is not None:
+					num_value = None
+				request.session['code_value'] = None
 
+				if num is not None:
+					num = None
+				request.session['code'] = None
 
 				if request.user.is_authenticated:
 					if order.coupon != None:
 						num = order.coupon
-						num_value = request.session.get('code_value')
+						num_value = order.coupon.ammount
 						order.save()
-					else:
-						num_value = request.session.get('code_value')
-						num = request.session.get('code')
-						num = None
-						num_value = None
-				else:
-					num = request.session.get('code')
-					num = None
-					num_value = request.session.get('code_value')
-					num_value = None
 
 				context = {
 					'items':items, 
@@ -305,7 +324,7 @@ def add_coupon(request):
 					'couponform':CouponForm()
 				}
 
-				return render(request, 'store/checkout.html', context)
+				return render(request, 'store/cart.html', context)
 	
 	return None
 
@@ -343,5 +362,4 @@ class RequestRefundView(View):
 
 			except ObjectDoesNotExist:
 				messages.info(self.request, "This order does not exist.")
-				print("pelko")
 				return redirect("/request_refund")
