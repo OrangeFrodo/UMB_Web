@@ -11,6 +11,7 @@ urlpatterns = [
 	path('order_confirmation/', views.order_confirmation, name='order_confirm'),
 	path('update_item/', views.updateItem, name="update_item"),
 	path('process_order/', views.processOrder, name="process_order"),
-	path('request_refund/', views.RequestRefundView.as_view(), name="request_refund")
-
+	path('request_refund/', views.RequestRefundView.as_view(), name="request_refund"),
+	path('contact_us/', views.contact_us, name='contact_us'),
+	path('create_user/', views.create_user, name='create_user')
 ]

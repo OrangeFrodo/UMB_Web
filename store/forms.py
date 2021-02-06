@@ -1,17 +1,24 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from phonenumber_field.formfields import PhoneNumberField
+from .models import Customer
 
 class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=100, help_text='Last Name')
-    last_name = forms.CharField(max_length=100, help_text='Last Name')
     email = forms.EmailField(max_length=150, help_text='Email')
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name',
-            'email', 'password1', 'password2',)
+        fields = ('username', 'email', 'password1', 'password2',)
 
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    phone = PhoneNumberField()
+
+    class Meta:
+        model = Customer
+        fields = ('first_name', 'last_name', 'phone',)
 
 class CouponForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={
@@ -25,3 +32,21 @@ class RefundForm(forms.Form):
     ref_code = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
     email = forms.EmailField()
+
+class ContactForm(forms.Form):
+    meno = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'class': 'form-control m-1 col-lg-12',
+        'placeholder': 'Vaše meno',
+        'aria-label' : "Recipient's username", 
+        'aria-describedby' : "basic-addon2"
+    }))
+    email = forms.EmailField(required=True, widget=forms.TextInput(attrs={
+        'class': 'form-control m-1 col-lg-12',
+        'placeholder': 'Vaše meno',
+        'aria-label' : "Recipient's username", 
+        'aria-describedby' : "basic-addon2"
+    }))
+    Správa = forms.CharField(widget=forms.Textarea(attrs={
+        'rows':3,
+        'class': 'form-control m-1 col-lg-12',
+        }), required=True)

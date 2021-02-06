@@ -2,21 +2,86 @@
 {% load static %}
 {% block content %}
 		{% for product in products %}
-		<div class="col">
-			<img class="thumbnail" src="{{product.imageURL}}">
-			<div class="box-element product">
-				<h6><strong>{{product.name}}</strong></h6>
-				<hr>
-
-				<div>
-					<button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-					
-					
-					<h4 style="display: inline-block; ;"><strong>${{product.price}}</strong></h4>
+		<div class="col-xl-12 col-lg-12 col-sm-12">
+			<div class="product text-center">
+			  <div class="position-relative mb-3">
+				<div class="badge text-white badge-"></div>
+				<img class="img-fluid w-100" src="{{product.imageURL}}" alt="...">
+				<div class="product-overlay">
+				  <ul class="mb-0 list-inline">
+					<li data-product="{{product.id}}" data-action="add" class="list-inline-item m-0 p-0 add-btn  update-cart"><a class="btn btn-sm btn-dark ">Add to cart</a></li>
+					<li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
+				  </ul>
 				</div>
+			  </div>
+			  <h6> {{product.name}}</h6>
+			  <p class="text-muted">{{product.price|floatformat:2}}€</p>
 			</div>
-		</div>
+		  </div>
+		  <div class="modal fade" id="productView" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			  <div class="modal-content">
+				<div class="modal-body p-0">
+				  <div class="row align-items-stretch">
+					<div class="col-lg-6 p-lg-0">
+						<a class="product-view d-block h-100 bg-cover bg-center" style="background: url({{product.imageURL}})" data-lightbox="productview" title=""></a>
+					</div>
+					<div class="col-lg-6">
+					  <button class="close p-4" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					  <div class="p-5 my-md-4">
+						<h2 class="h4">{{product.name}}</h2>
+						<p class="text-muted">{{product.price|floatformat:2}}€</p>
+						<p class="text-small mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus. Vestibulum ultricies aliquam convallis.</p>
+						<div class="row align-items-stretch mb-4">
+						  <div class="col-sm-5 pl-sm-0"><li data-product="{{product.id}}" data-action="add" class="list-inline-item m-0 p-0 add-btn  update-cart"><a class="btn btn-sm btn-dark ">Add to cart</a></li></div>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
 		{% endfor %}
-	</div>
-
+		<br>
+		<section class="py-5 bg-light">
+			<div class="container">
+			  <div class="row text-center">
+				<div class="col-lg-4 mb-3 mb-lg-0">
+				  <div class="d-inline-block">
+					<div class="media align-items-end">
+						<img class="" style="height: 50px; width: auto" src="{% static 'img/tag.png' %}" alt="...">
+					  <div class="media-body text-left ml-3">
+						<h6 class="text-uppercase mb-1">Posielame</h6>
+						<p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<div class="col-lg-4 mb-3 mb-lg-0">
+				  <div class="d-inline-block">
+					<div class="media align-items-end">
+						<img class="" style="height: 50px; width: auto" src="{% static 'img/tag.png' %}" alt="...">
+					  <div class="media-body text-left ml-3">
+						<h6 class="text-uppercase mb-1">24 x 7 Support</h6>
+						<p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<div class="col-lg-4">
+				  <div class="d-inline-block">
+					<div class="media align-items-end">
+						<img class="" style="height: 50px; width: auto" src="{% static 'img/tag.png' %}" alt="...">
+					  <div class="media-body text-left ml-3">
+						<h6 class="text-uppercase mb-1">Festival offer</h6>
+						<p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </section>
+		  <br>
 {% endblock content %}

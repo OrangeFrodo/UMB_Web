@@ -9,11 +9,11 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Customer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-	first_name = models.CharField(max_length=50, null=True, blank=True)
-	last_name = models.CharField(max_length=50, null=True, blank=True)
+	first_name = models.CharField('krstné_meno', max_length=50, null=True, blank=True)
+	last_name = models.CharField('priezvisko', max_length=50, null=True, blank=True)
 	name = models.CharField(max_length=200, null=True)
 	email = models.CharField(max_length=200)
-	phone = PhoneNumberField(null=False, blank=True, unique=True)
+	phone = PhoneNumberField(null=False, blank=True)
 
 	def create_customer_profile(sender, instance, created, **kwargs):
 		if created:
@@ -21,8 +21,8 @@ class Customer(models.Model):
 									name=instance.username, 
 									email=instance.email, 
 									first_name= instance.first_name,
-									phone = instance.phone, 
-									last_name=instance.last_name)
+									last_name=instance.last_name,
+									)
 
 			EmailAddress.objects.create(user=instance,
 										email=instance.email)

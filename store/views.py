@@ -1,5 +1,7 @@
 from django import setup
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse # Add this
+
 from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from django.shortcuts import render
 from django.contrib import messages
@@ -11,10 +13,26 @@ from django.contrib import messages
 import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder, cuponOrder
-from .forms import CouponForm, RefundForm
+from .forms import CouponForm, RefundForm, ContactForm, ProfileForm
+
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+
+def contact_us(request):
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		if form.is_valid():
+			sender_name = form.cleaned_data['meno']
+			sender_email = form.cleaned_data['email']
+			message = "{0} has sent you a new message:\n\n{1}".format(sender_name, form.cleaned_data['Správa'])
+			send_mail('New Enquiry', message, sender_email, ['noreply@saulgadgets.com'])
+			return HttpResponse('Thanks for contacting us!')
+	
+	else:
+		form = ContactForm()
+	
+	return render(request, 'store/contact_us.html', {'form': form})
 
 def order_confirmation(request):
 	data = cartData(request)
@@ -363,3 +381,20 @@ class RequestRefundView(View):
 			except ObjectDoesNotExist:
 				messages.info(self.request, "This order does not exist.")
 				return redirect("/request_refund")
+
+def create_user(request):
+	if request.method == 'POST':
+		profile_form = ProfileForm(request.POST, instance=request.user.customer)
+		if profile_form.is_valid():
+			profile_form.save()
+			messages.success(request, ('New user created successfully'))
+			return redirect('/')
+		else:
+			messages.error(request, ('Please correct the error below.'))
+	else:
+		profile_form = ProfileForm()
+
+
+	return render(request, 'account/signup_update.html', {
+		'profile_form': profile_form
+	})
