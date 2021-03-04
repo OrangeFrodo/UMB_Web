@@ -6,7 +6,7 @@
 
     <!-- Brand -->
     <a class="navbar-brand waves-effect" href="/ ">
-    <strong class="blue-text">BFrbands</strong>
+    <strong class="">BFRBands</strong>
     </a>
 
     <!-- Collapse -->
@@ -21,8 +21,13 @@
     <!-- Left -->
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-           <a class="nav-link active">Domov</a>
+           <a class="nav-link active" href="/ ">Domov</a>
         </li>
+        {% comment %}<li class="nav-item"><a class="nav-link" href="{% url 'store_list' %}"> <i class="fas mr-1 text-gray"></i>Obchod</a></li> {% endcomment %}
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Profil</a></li>
+        {% endif %}
     </ul>
 
     <!-- Right -->
@@ -31,7 +36,7 @@
         <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'cart' %}">
               <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>
-              <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+              <span class="clearfix d-none d-sm-inline-block"> Košík </span>
               {% if cartItems != 0%}
               <small class="text-gray">({{cartItems}})</small></a>
               {% else %}
@@ -40,9 +45,9 @@
             </a>
         </li>
         {% if request.user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Logout</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Odhlásenie</a></li>
         {% else %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}"> <i class="fas fa-user-alt mr-1 text-gray"></i>Prihlásenie</a></li>
         {% endif %}
     </ul>
 

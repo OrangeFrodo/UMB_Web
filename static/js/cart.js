@@ -1,3 +1,13 @@
+var viewBtns = document.getElementsByClassName('update-detail')
+
+for (i = 0; i < viewBtns.length; i++) {
+	viewBtns[i].addEventListener('click', function(){
+		var productId = this.dataset.product
+		
+	})
+}
+
+
 var updateBtns = document.getElementsByClassName('update-cart')
 
 for (i = 0; i < updateBtns.length; i++) {
@@ -56,6 +66,12 @@ function addCookieItem(productId, action){
 			delete cart[productId];
 		}
 	}
+
+	if (action == 'delete'){
+		console.log("Jou")
+		delete cart[productId];
+	}
+
 	console.log('CART:', cart)
 	document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 	

@@ -1,12 +1,14 @@
 from django import setup
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import query
 from django.http import HttpResponse # Add this
+from django.shortcuts import get_object_or_404
 
 from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from django.shortcuts import render
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.generic import View
+from django.views.generic import View, ListView, DetailView
 import json
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -18,22 +20,8 @@ from .forms import CouponForm, RefundForm, ContactForm, ProfileForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-
-def contact_us(request):
-	if request.method == 'POST':
-		form = ContactForm(request.POST)
-		if form.is_valid():
-			sender_name = form.cleaned_data['meno']
-			sender_email = form.cleaned_data['email']
-			message = "{0} has sent you a new message:\n\n{1}".format(sender_name, form.cleaned_data['Správa'])
-			send_mail('New Enquiry', message, sender_email, ['noreply@saulgadgets.com'])
-			return HttpResponse('Thanks for contacting us!')
-	
-	else:
-		form = ContactForm()
-	
-	return render(request, 'store/contact_us.html', {'form': form})
-
+# EMAIL CONFIRMATION
+"""
 def order_confirmation(request):
 	data = cartData(request)
 
@@ -46,6 +34,45 @@ def order_confirmation(request):
 	}
 
 	return render(request, 'emails/order_confirmation.html', context)
+"""
+
+#--------
+#        |
+# STORE  |
+#        | 
+#--------
+
+def create_user(request):
+	if request.method == 'POST':
+		profile_form = ProfileForm(request.POST, instance=request.user.customer)
+		if profile_form.is_valid():
+			profile_form.save()
+			messages.success(request, ('New user created successfully'))
+			return redirect('/')
+		else:
+			messages.error(request, ('Please correct the error below.'))
+	else:
+		profile_form = ProfileForm()
+
+
+	return render(request, 'account/signup_update.html', {
+		'profile_form': profile_form
+	})
+
+
+def profile_view(request):
+	data = cartData(request)
+
+	order = data['order']
+	items = data['items']
+
+	context = {
+		'order':order,
+		'items':items
+	}
+
+	return render(request, 'account/profile.html', context)
+
 
 def store(request):
 	data = cartData(request)
@@ -57,6 +84,18 @@ def store(request):
 	products = Product.objects.all()
 	context = {'products':products, 'cartItems':cartItems}
 	return render(request, 'store/store.html', context)
+
+
+def storeList(request):
+	data = cartData(request)
+
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+
+	products = Product.objects.all()
+	context = {'products':products, 'cartItems':cartItems}
+	return render(request, 'store/store_list.html', context)
 
 
 def cart(request):
@@ -82,10 +121,7 @@ def cart(request):
 	else:
 		num = request.session.get('code')
 		num_value = request.session.get('code_value')
-	
-	print(num)
-	print(num_value)
-	
+
 	if num != None:
 		if not request.user.is_authenticated:
 			data['order']['get_cart_total'] -= num_value	
@@ -100,6 +136,7 @@ def cart(request):
 	}
 
 	return render(request, 'store/cart.html', context)
+
 
 def checkout(request):
 	data = cartData(request)
@@ -130,6 +167,69 @@ def checkout(request):
 
 	return render(request, 'store/checkout.html', context)
 
+
+def contact_us(request):
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		if form.is_valid():
+			sender_name = form.cleaned_data['meno']
+			sender_email = form.cleaned_data['email']
+			message = "{0} has sent you a new message:\n\n{1}".format(sender_name, form.cleaned_data['Správa'])
+			send_mail('New Enquiry', message, sender_email, ['noreply@saulgadgets.com'])
+			return HttpResponse('Thanks for contacting us!')
+	
+	else:
+		form = ContactForm()
+	
+	return render(request, 'store/contact_us.html', {'form': form})
+
+
+class RequestRefundView(View):
+
+	def get(self, *args, **kwargs):
+		form = RefundForm()
+		context = {
+			'form': form
+		}
+		return render(self.request, "store/request_refund.html", context)
+
+	def post(self, *args, **kwargs):
+		form = RefundForm(self.request.POST)
+		if form.is_valid():
+			ref_code = form.cleaned_data.get('ref_code')
+			message = form.cleaned_data.get('message')
+			email = form.cleaned_data.get('email')
+
+			try:
+				order = Order.objects.get(temporary_id=ref_code)
+				order.refund_requested = True
+				order.save()
+
+				refund = Refund()
+				refund.order = order
+				refund.reason = message
+				refund.email = email
+				refund.save()
+
+				messages.info(self.request, "Your request was received")
+
+				return redirect("/request_refund")
+
+			except ObjectDoesNotExist:
+				messages.info(self.request, "This order does not exist.")
+				return redirect("/request_refund")
+
+#---------
+#         |
+# ITEM	  |
+#         | 
+#---------
+
+def incident_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, "store/incident.html", locals())
+			
+
 def updateItem(request):
 	data = json.loads(request.body)
 	productId = data['productId']
@@ -147,6 +247,8 @@ def updateItem(request):
 		orderItem.quantity = (orderItem.quantity + 1)
 	elif action == 'remove':
 		orderItem.quantity = (orderItem.quantity - 1)
+	elif action == 'delete':
+		orderItem.quantity = 0
 
 	orderItem.save()
 
@@ -154,6 +256,13 @@ def updateItem(request):
 		orderItem.delete()
 
 	return JsonResponse('Item was added', safe=False)
+
+#---------
+#         |
+# ORDER	  |
+#         | 
+#---------
+
 
 def processOrder(request):
 	transaction_id = datetime.datetime.now().timestamp()
@@ -183,6 +292,7 @@ def processOrder(request):
 		city=data['shipping']['city'],
 		state=data['shipping']['state'],
 		zipcode=data['shipping']['zipcode'],
+		type_of_delivery=data['shipping']['type_of_delivery'],
 		)
 	
 	if order.coupon:
@@ -207,6 +317,13 @@ def processOrder(request):
 	send_mail('Order confirmation', 'Your order has been sent!!', 'noreply@saulgadgets.com', ['noreply@saulgadgets.com','mail@saulgadgets.com', customer.email], fail_silently=False, html_message=html)
 
 	return JsonResponse('Payment submitted..', safe=False)
+
+#---------
+#         |
+# COUPON  |
+#         | 
+#---------
+
 
 def get_coupon(request, code):
 	try:
@@ -347,54 +464,3 @@ def add_coupon(request):
 	return None
 
 
-class RequestRefundView(View):
-
-	def get(self, *args, **kwargs):
-		form = RefundForm()
-		context = {
-			'form': form
-		}
-		return render(self.request, "store/request_refund.html", context)
-
-	def post(self, *args, **kwargs):
-		form = RefundForm(self.request.POST)
-		if form.is_valid():
-			ref_code = form.cleaned_data.get('ref_code')
-			message = form.cleaned_data.get('message')
-			email = form.cleaned_data.get('email')
-
-			try:
-				order = Order.objects.get(temporary_id=ref_code)
-				order.refund_requested = True
-				order.save()
-
-				refund = Refund()
-				refund.order = order
-				refund.reason = message
-				refund.email = email
-				refund.save()
-
-				messages.info(self.request, "Your request was received")
-
-				return redirect("/request_refund")
-
-			except ObjectDoesNotExist:
-				messages.info(self.request, "This order does not exist.")
-				return redirect("/request_refund")
-
-def create_user(request):
-	if request.method == 'POST':
-		profile_form = ProfileForm(request.POST, instance=request.user.customer)
-		if profile_form.is_valid():
-			profile_form.save()
-			messages.success(request, ('New user created successfully'))
-			return redirect('/')
-		else:
-			messages.error(request, ('Please correct the error below.'))
-	else:
-		profile_form = ProfileForm()
-
-
-	return render(request, 'account/signup_update.html', {
-		'profile_form': profile_form
-	})

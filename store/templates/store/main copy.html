@@ -144,12 +144,10 @@
         <div class="container py-4">
           <div class="row py-5">
             <div class="col-md-4 mb-3 mb-md-0">
-              <h6 class="text-uppercase mb-3">Customer services</h6>
+              <h6 class="text-uppercase mb-3">Support</h6>
               <ul class="list-unstyled mb-0">
-                <li><a class="footer-link" href="#">Help &amp; Contact Us</a></li>
-                <li><a  href="{% url 'request_refund' %}"class="footer-link">Vrátenie tovaru</a></li>
-                <li><a class="footer-link" href="#">Online Stores</a></li>
-                <li><a class="footer-link" href="#">Terms &amp; Conditions</a></li>
+                <li><a href="{% url 'contact_us' %}" class="footer-link">Kontaktujte nás</a></li>
+                <li><a href="{% url 'request_refund' %}" class="footer-link">Vrátenie tovaru</a></li>
               </ul>
             </div>
             <div class="col-md-4 mb-3 mb-md-0">
@@ -181,13 +179,21 @@
         </div>
       </footer>
 	<!--/.Footer-->
-
+	
 	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/promo_code.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+	<!-- <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script> -->
 	<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+	<!-- <script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script> -->
+	<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendor/lightbox2/js/lightbox.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendor/nouislider/nouislider.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendor/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendor/owl.carousel2/owl.carousel.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/front.js' %}"></script>
 
 </body>
 </html>

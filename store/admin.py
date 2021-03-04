@@ -57,9 +57,31 @@ class OrderAdmin(admin.ModelAdmin):
 
     actions = [make_refund_accepted, admin_order_being_delivered]
 
+class ProductVariantsInLine(admin.TabularInline):
+    model = Variants
+    extra = 1
+    show_change_link = True
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'digital']
+    inlines = [ProductVariantsInLine]
+
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ['name', 'code', 'color_tag']
+
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'code']
+
+class VariantsAdmin(admin.ModelAdmin): 
+    list_display = ['title', 'product', 'color', 'size']
+
 admin.site.register(Customer)
-admin.site.register(Product)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(ShippingAddress)
 admin.site.register(Coupon)
+
+admin.site.register(Color, ColorAdmin)
+admin.site.register(Size, SizeAdmin)
+admin.site.register(Variants, VariantsAdmin)

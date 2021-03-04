@@ -19,7 +19,7 @@
           <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
             <li class="breadcrumb-item"><a href="{% url 'store' %}">Domov</a></li>
-            <li class="breadcrumb-item"><a>Informacie užívateľa</a></li>
+            <li class="breadcrumb-item active"><a>Informacie užívateľa</a></li>
           </ol>
           </nav>
         </div>
@@ -30,11 +30,13 @@
       <section class="mb-4">
         <div class="row wow fadeIn">
           <div class='col-6 offset-3'>
+            <h1>Doplňujúce infromácie</h1>
+            <p>Je nutné vyplniť požadujúce infromácie v prípade zasielania objednávky.</p>
              <form method="post">
                 {% csrf_token %}
                 {{ user_form.as_p }}
                 {{ profile_form.as_p }}
-                <button onclick="window.location='/';" type="submit">Vytvoriť účet</button>
+                <button class="btn btn-primary btn-dark" onclick="window.location='/';" type="submit">Vytvoriť účet</button>
               </form>
           </div>
         </div>

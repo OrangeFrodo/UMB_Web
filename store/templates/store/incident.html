@@ -1,0 +1,32 @@
+{% load static %}
+
+<!-- <div class="modal fade" id="productView" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0"> -->
+                <div class="row align-items-stretch">
+                    <div class="col-lg-6 p-lg-0 margin-top-0">
+                        <a class="product-view d-block h-100 bg-cover bg-center" style="background: url({{product.imageURL}})" data-lightbox="productview" title=""></a>
+                    </div>
+                    <div class="col-lg-6">
+                    <button class="close p-4" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <div class="p-5 my-md-4">
+                        <h2 class="h4">{{product.name}}</h2>
+                        <p class="text-muted">{{product.price|floatformat:2}}€</p>
+                        <p class="text-small mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus. Vestibulum ultricies aliquam convallis.</p>
+                        <div class="row align-items-stretch mb-4">
+                            <div class="col-sm-5 pl-sm-0">
+                                    <li data-product="{{product.id}}" data-action="add" class="list-inline-item m-0 p-0 add-btn update-cart">
+                                        <a class="btn btn-sm btn-dark ">Add to cart</a>
+                                    </li>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            <!-- </div>
+        </div>
+    </div>
+</div> -->
+
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>

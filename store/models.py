@@ -1,11 +1,19 @@
 from allauth.account.models import EmailAddress
 from django.db import models
+from django.shortcuts import reverse
 from django.contrib.auth.models import User
 from django.db.models.fields import CharField, NullBooleanField
 from django.db.models.signals import post_save
+from django.utils.html import mark_safe
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
+
+#_______
+#			|
+# CUSTOMER 	|
+#			|
+#_______	|
 
 class Customer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -32,12 +40,29 @@ class Customer(models.Model):
 	def __str__(self):
 		return self.name
 
+#_______
+#			|
+# PRODUCT 	|
+#			|
+#_______	|
 
 class Product(models.Model):
+
+	VARIANTS = (
+		('None', 'None'),
+		('Size', 'Size'),
+		('Color', 'Color'),
+		('Size-Color', 'Size-Color'),
+	)
+
 	name = models.CharField(max_length=200)
 	price = models.FloatField()
 	digital = models.BooleanField(default=False,null=True, blank=True)
+	
 	image = models.ImageField(null=True, blank=True)
+	slug = models.SlugField()
+
+	variant = models.CharField(max_length=10, choices=VARIANTS, default='None')
 
 	def __str__(self):
 		return self.name
@@ -49,6 +74,52 @@ class Product(models.Model):
 		except:
 			url = ''
 		return url
+	
+
+	def get_absolute_url(self):
+		return reverse("store:product", kwargs={
+			'slug': self.slug
+		})
+
+class Color (models.Model):
+	name = models.CharField(max_length=20)
+	code = models.CharField(max_length=10, blank=True, null=True)
+
+	def __str__(self):
+		return self.name
+	
+	def color_tag(self):
+		if self.code is not None:
+			return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
+		else:
+			return ""
+
+
+class Size(models.Model):
+	name = models.CharField(max_length=20)
+	code = models.CharField(max_length=10, blank=True, null=True)
+
+	def __str__(self):
+		return self.name
+
+
+class Variants(models.Model):
+	title = models.CharField(max_length=100, blank=True, null=True)
+	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+	color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
+	size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True)
+	price = models.FloatField(default=0)
+
+	def __str__(self):
+		return self.title
+
+
+#_______
+#		|
+# ORDER |
+#		|
+#_______|
+
 
 class Order(models.Model):
 	customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
@@ -111,6 +182,7 @@ class ShippingAddress(models.Model):
 	city = models.CharField(max_length=200, null=False)
 	state = models.CharField(max_length=200, null=False)
 	zipcode = models.CharField(max_length=200, null=False)
+	type_of_delivery = models.CharField(max_length=200, null=False)
 	date_added = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):

@@ -31,24 +31,25 @@
 					<div class="row">
 						<div class="col-lg-6 form-group">
 						<label class="text-small text-uppercase" for="firstName">Krstné meno</label>
-						<input class="form-control form-control-lg" id="firstName" type="text" name="first_name" placeholder="Vložte svoje krstné meno">
+						<input class="form-control form-control-lg" id="firstName" type="text" name="first_name" placeholder="Vložte svoje krstné meno" required>
 						</div>
 						<div class="col-lg-6 form-group">
 						<label class="text-small text-uppercase" for="lastName">Prezvisko</label>
-						<input class="form-control form-control-lg" id="lastName" type="text" name="name" placeholder="Vložte svoje priezvisko">
+						<input class="form-control form-control-lg" id="lastName" type="text" name="name" placeholder="Vložte svoje priezvisko" required>
 						</div>
 						<div class="col-lg-6 form-group">
 						<label class="text-small text-uppercase" for="email">Emailová adresa</label>
-						<input class="form-control form-control-lg" id="email" type="email" name="email" placeholder="e.g. VasMail@priklad.com">
+						<input class="form-control form-control-lg" id="email" type="email" name="email" placeholder="e.g. VasMail@priklad.com" required>
 						</div>
 						<div class="col-lg-6 form-group">
 						<label class="text-small text-uppercase" for="phone">Telefónne číslo</label>
-						<input class="form-control form-control-lg" id="phone" type="tel" name="phone" placeholder="e.g. +421 945187399">
+						<input class="form-control form-control-lg" id="phone" type="tel" name="phone" placeholder="e.g. +421 945187399" required>
 						</div>
 					</div>
 				</div>
 			
 					<div id="shipping-info">
+
 						<div class="col-lg-12 form-group" style="padding-right: 0px;  padding-left: 0px;">
 						<label class="text-small text-uppercase" for="country">Krajna</label>
 							<select class="custom-select d-block w-100" id="country" data-width="fit" name="state" data-style="form-control form-control-lg" data-title="Select your country">
@@ -63,12 +64,20 @@
 							<div class="row">
 								<div class="col-lg-6 form-group">
 									<label class="text-small text-uppercase" for="city">Mesto</label>
-									<input class="form-control form-control-lg" id="city" name="city" type="text">
+									<input class="form-control form-control-lg" id="city" name="city" type="text" required>
 								</div>
 								<div class="col-lg-6 form-group">
 									<label class="text-small text-uppercase" for="state">PSČ</label>
-									<input class="form-control form-control-lg" id="zipcode" name="zipcode" type="text">
+									<input class="form-control form-control-lg" id="zipcode" name="zipcode" type="text" required>
 								</div>
+							</div>
+						<div class="col-lg-12 form-group" style="padding-right: 0px;  padding-left: 0px;">
+							<label class="text-small text-uppercase" for="type_of_delivery">Spôsob doručenia</label>
+								<select class="custom-select d-block w-100" id="type_of_delivery" data-width="fit" name="type_of_delivery" data-style="form-control form-control-lg" data-title="Vyberte spôsob doručenia">
+								<option class="text-small text-uppercase" value="">Vyberte...</option>
+								<option>Kurier</option>
+								<option>Odberné miesto</option>
+								</select>
 							</div>
 					</div>
 				
@@ -97,24 +106,21 @@
 					<li class="border-bottom my-2"></li>
 					{% endif %}
 				  
-				  <li class="d-flex align-items-center justify-content-between"><strong class="text-uppercase small font-weight-bold">Spolu</strong><span>${{order.get_cart_total|floatformat:2}}</span></li>
+				  <li class="d-flex align-items-center justify-content-between"><strong class="text-uppercase small font-weight-bold">Spolu</strong><span>{{order.get_cart_total|floatformat:2}}€</span></li>
 				</ul>
 			  </div>
 			</div>
 		  </div>
-		 	 <div class="hidden col-lg-12" id="payment-info">
-				<!-- <button id="make-payment">Make payment</button> -->
+		 	 <div class="hidden col-lg-8" id="payment-info">
+				<button class="col-12 mb-3 btn-warning" onclick="addTypeOfPay()" style="height: 56.99306px; border-radius: 4px;">Na dobierku</button>
 				<div id="paypal-button-container"></div>
+				<div></div>
 			</div>
 		</div>
-
-		
 	  </section>
 </div>
 
 	<script src="https://www.paypal.com/sdk/js?client-id=AWmNXrZincV8qpKxvNfzf5hXVlFx7ZfbooOTo9c8zbEw1YKmQN9KWq0fIHvblrS6akCjUdyuV7_o8V5v&currency=EUR&disable-funding=credit"></script>
-
-
 
 	<script>
 
@@ -149,6 +155,7 @@
 
         }).render('#paypal-button-container');
     </script>
+	
 
 	<script type="text/javascript">
 		var shipping = '{{order.shipping}}'
@@ -192,6 +199,7 @@
 				'city':null,
 				'state':null,
 				'zipcode':null,
+				'type_of_delivery':null,
 			}
 
 			if (shipping != 'False'){
@@ -199,6 +207,7 @@
 		    	shippingInfo.city = form.city.value
 		    	shippingInfo.state = form.state.value
 		    	shippingInfo.zipcode = form.zipcode.value
+				shippingInfo.type_of_delivery = form.type_of_delivery.value
 	    	}
 
 	    	if (user == 'AnonymousUser'){
