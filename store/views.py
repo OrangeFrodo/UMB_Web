@@ -1,23 +1,22 @@
+import json
+import datetime
+
 from django import setup
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import query
 from django.http import HttpResponse # Add this
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+
+from django.conf import settings
+from django.core.mail import send_mail
 
 from django.db.models.fields import PositiveIntegerRelDbTypeMixin
-from django.shortcuts import render
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.generic import View, ListView, DetailView
-import json
-from django.shortcuts import redirect
-from django.contrib import messages
-import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder, cuponOrder
 from .forms import CouponForm, RefundForm, ContactForm, ProfileForm
-
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 # EMAIL CONFIRMATION
@@ -78,7 +77,6 @@ def store(request):
 	data = cartData(request)
 
 	cartItems = data['cartItems']
-	order = data['order']
 	items = data['items']
 
 	products = Product.objects.all()
@@ -174,8 +172,9 @@ def contact_us(request):
 		if form.is_valid():
 			sender_name = form.cleaned_data['meno']
 			sender_email = form.cleaned_data['email']
+			email_from = settings.EMAIL_HOST_USER
 			message = "{0} has sent you a new message:\n\n{1}".format(sender_name, form.cleaned_data['Správa'])
-			send_mail('New Enquiry', message, sender_email, ['noreply@saulgadgets.com'])
+			send_mail('New Enquiry', message, sender_email, [email_from])
 			return HttpResponse('Thanks for contacting us!')
 	
 	else:

@@ -47,7 +47,7 @@ def cartData(request):
 	if request.user.is_authenticated:
 		cookieData = cookieCart(request)
 		customer = request.user.customer
-		order, created = Order.objects.get_or_create(customer=customer, temporary_id=cookieData['order']['temporary_id'],complete=False)
+		order, created = Order.objects.get_or_create(customer=customer, temporary_id=cookieData['order']['temporary_id'], complete=False)
 		items = order.orderitem_set.all()
 		cartItems = order.get_cart_items
 	else:

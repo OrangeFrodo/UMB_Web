@@ -5544,6 +5544,34 @@ a.close.disabled {
 	margin-top: 0px !important;
 }
 
+.check {
+    color: red;
+    stroke-dasharray: 130px 130px;
+    stroke-dashoffset: 130px;
+    -webkit-transition: stroke-dashoffset 4.1s linear 0s;
+    transition: stroke-dashoffset 500ms ease-in-out;
+}
+
+.blinking{
+	animation:blinkingText 2s;
+    color: #cc9515;
+}
+@keyframes blinkingText{
+	0%{		color: #dcb14a;	}
+	49%{	color: transparent;	}
+	50%{	color: transparent;	}
+	99%{	color:transparent;	}
+	100%{	color: #dcb14a;	}
+}
+
+.not-mobile {
+    display:block !important
+}
+
+.mobile {
+    display:none !important
+}
+
 .modal-footer {
  display:-ms-flexbox;
  display:flex;

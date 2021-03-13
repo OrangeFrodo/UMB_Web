@@ -1,3 +1,4 @@
+/*
 var viewBtns = document.getElementsByClassName('update-detail')
 
 for (i = 0; i < viewBtns.length; i++) {
@@ -6,7 +7,7 @@ for (i = 0; i < viewBtns.length; i++) {
 		
 	})
 }
-
+*/
 
 var updateBtns = document.getElementsByClassName('update-cart')
 
