@@ -140,3 +140,5 @@ cython_debug/
 static_root
 media_root
 node_modules
+
+django_ecommerce_mod5.git

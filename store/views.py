@@ -195,9 +195,9 @@ class RequestRefundView(View):
 	def post(self, *args, **kwargs):
 		form = RefundForm(self.request.POST)
 		if form.is_valid():
-			ref_code = form.cleaned_data.get('ref_code')
-			message = form.cleaned_data.get('message')
-			email = form.cleaned_data.get('email')
+			ref_code = form.cleaned_data.get('Kód_objednávky')
+			message = form.cleaned_data.get('Správa')
+			email = form.cleaned_data.get('Email')
 
 			try:
 				order = Order.objects.get(temporary_id=ref_code)
@@ -212,11 +212,11 @@ class RequestRefundView(View):
 
 				messages.info(self.request, "Your request was received")
 
-				return redirect("/request_refund")
+				return redirect("/")
 
 			except ObjectDoesNotExist:
 				messages.info(self.request, "This order does not exist.")
-				return redirect("/request_refund")
+				return redirect("/")
 
 #---------
 #         |

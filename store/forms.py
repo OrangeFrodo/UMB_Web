@@ -48,9 +48,9 @@ class CouponForm(forms.Form):
     }))
 
 class RefundForm(forms.Form):
-    ref_code = forms.CharField()
-    message = forms.CharField(widget=forms.Textarea)
-    email = forms.EmailField()
+    Kód_objednávky = forms.CharField()
+    Správa = forms.CharField(widget=forms.Textarea)
+    Email = forms.EmailField()
 
 
 class ContactForm(forms.Form):
