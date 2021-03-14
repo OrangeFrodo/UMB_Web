@@ -8,7 +8,6 @@ def cookieCart(request):
 		cart = json.loads(request.COOKIES['cart'])
 	except:
 		cart = {'temporary_id' : uuid.uuid4()}
-		print('CART:', cart)
 
 	temporary_id = cart['temporary_id']
 

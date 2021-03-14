@@ -142,8 +142,6 @@ def checkout(request):
 	num = request.session.get('code')
 	num_value = request.session.get('code_value')
 
-	print(num)
-	print(num_value)
 
 	cartItems = data['cartItems']
 	order = data['order']
@@ -233,8 +231,6 @@ def updateItem(request):
 	data = json.loads(request.body)
 	productId = data['productId']
 	action = data['action']
-	print('Action:', action)
-	print('Product:', productId)
 
 	customer = request.user.customer
 	product = Product.objects.get(id=productId)
@@ -276,8 +272,6 @@ def processOrder(request):
 	total = float(data['form']['total'])
 	order.transaction_id = transaction_id
 
-	print(total)
-	print(order.get_cart_total)
 
 	if total == order.get_cart_total:
 		order.complete = True
