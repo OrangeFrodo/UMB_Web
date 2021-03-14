@@ -5544,6 +5544,11 @@ a.close.disabled {
 	margin-top: 0px !important;
 }
 
+.dobierka{
+    height: 56.99306px; 
+    border-radius: 4px;
+}
+
 .check {
     color: red;
     stroke-dasharray: 130px 130px;

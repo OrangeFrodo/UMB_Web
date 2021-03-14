@@ -24,10 +24,12 @@
            <a class="nav-link active" href="/ ">Domov</a>
         </li>
         {% comment %}<li class="nav-item"><a class="nav-link" href="{% url 'store_list' %}"> <i class="fas mr-1 text-gray"></i>Obchod</a></li> {% endcomment %}
+        {% comment %}
         {% if request.user.is_authenticated %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'profile' %}">Profil</a></li>
         {% endif %}
+        {% endcomment %}
     </ul>
 
     <!-- Right -->

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+<html lang="sk">
 <head>
 	<title>Ecom</title>
 
@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <!-- Favicon-->
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
-	<style type="text/css">
+	<style>
 		html,
 		body,
 		header,
@@ -69,7 +69,7 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
 
-	<script type="text/javascript">
+	<script>
 		var user = '{{request.user}}'
 
 		function getToken(name) {
@@ -111,19 +111,14 @@
 		var cart = JSON.parse(getCookie('cart'))
 		if (cart == undefined){
 			cart = {temporary_id : uuidv4()}
-			console.log('Cart Created!', cart)
 			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 		}
-		console.log('Cart:', cart)
 
 		var code = JSON.parse(getCookie('code'))
 		if (code == undefined){
 			code = {}
-			console.log('code: ', code)
 			document.cookie ='code=' + JSON.stringify(code) + ";domain=;path=/"
 		}
-		console.log('code: ', code)
-
 	
 	</script>
 	
@@ -187,20 +182,20 @@
       </footer>
 	<!--/.Footer-->
 
-	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/promo_code.js' %}"></script>
+	<script src="{% static 'js/cart.js' %}"></script>
+	<script src="{% static 'js/promo_code.js' %}"></script>
 	<!-- <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script> -->
-	<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+	<script src="{% static 'js/popper.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/mdb.min.js' %}"></script>
 	<!-- <script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script> -->
-	<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'vendor/lightbox2/js/lightbox.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'vendor/nouislider/nouislider.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'vendor/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'vendor/owl.carousel2/owl.carousel.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/front.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'vendor/lightbox2/js/lightbox.min.js' %}"></script>
+	<script src="{% static 'vendor/nouislider/nouislider.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+	<script src="{% static 'vendor/owl.carousel2/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js' %}"></script>
+	<script src="{% static 'js/front.js' %}"></script>
 	
 	
 </body>

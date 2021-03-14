@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+<html lang="sk">
 <head>
 	<title>Ecom</title>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 
@@ -33,7 +35,7 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <!-- Favicon-->
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
-	<style type="text/css">
+	<style>
 		html,
 		body,
 		header,
@@ -65,7 +67,7 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
 
-	<script type="text/javascript">
+	<script>
 		var user = '{{request.user}}'
 
 		function getToken(name) {
@@ -107,18 +109,14 @@
 		var cart = JSON.parse(getCookie('cart'))
 		if (cart == undefined){
 			cart = {temporary_id : uuidv4()}
-			console.log('Cart Created!', cart)
 			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 		}
-		console.log('Cart:', cart)
 
 		var code = JSON.parse(getCookie('code'))
 		if (code == undefined){
 			code = {}
-			console.log('code: ', code)
 			document.cookie ='code=' + JSON.stringify(code) + ";domain=;path=/"
 		}
-		console.log('code: ', code)
 
 	
 	</script>
