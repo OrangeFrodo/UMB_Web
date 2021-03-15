@@ -113,7 +113,7 @@
 			</div>
 		  </div>
 		 	 <div class="hidden col-lg-8" id="payment-info">
-				<button class="col-12 mb-3 btn-warning dobierka" onclick="addTypeOfPay()">
+				<button class="col-12 mb-3 btn-warning dobierka" onclick="submitFormData()">
 				Na dobierku</button>
 				
 				<div id="paypal-button-container"></div>
@@ -162,7 +162,7 @@
     </script>
 	
 
-	<script type="text/javascript">
+	<script>
 		var shipping = '{{order.shipping}}'
 
 		if (shipping == 'False'){
