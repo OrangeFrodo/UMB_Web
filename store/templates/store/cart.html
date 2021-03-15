@@ -106,7 +106,7 @@
 				<li class="border-bottom my-2"></li>
 				<li class="d-flex align-items-center justify-content-between mb-4"><strong class="text-uppercase small font-weight-bold">Cena</strong><span>€{{order.get_cart_total|floatformat:2}}</span></li>
 				<li>
-					<form lass="card p-2" action="{% url 'add-coupon' %}" method="POST">
+					<form action="{% url 'add-coupon' %}" method="POST">
 					<div class="form-group mb-0">
 						{% csrf_token %}
 						<div class="input-group">

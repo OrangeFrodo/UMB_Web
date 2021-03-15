@@ -44,7 +44,6 @@ class CouponForm(forms.Form):
         'class': 'form-control m-1 input-code',
         'placeholder': 'Promo code',
         'aria-label' : "Recipient's username", 
-        'aria-describedby' : "basic-addon2"
     }))
 
 class RefundForm(forms.Form):

@@ -25,7 +25,7 @@ SECRET_KEY = 'z+ksf@)0d^qojbh4rnp4b1to$hq&*tt(3bs$gf(3i267g$k9ln'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.29', '127.0.0.1', '172.20.10.6', '46.101.154.215']
+ALLOWED_HOSTS = ['192.168.1.29', '127.0.0.1', '172.20.10.6', '46.101.154.215', 'django-s-1vcpu-1gb-fra1-01']
 
 # Emails
 
@@ -153,7 +153,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 MEDIA_URL = '/images/'
 
