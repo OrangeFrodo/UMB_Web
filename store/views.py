@@ -74,6 +74,7 @@ def profile_view(request):
 
 
 def store(request):
+	
 	data = cartData(request)
 
 	cartItems = data['cartItems']
